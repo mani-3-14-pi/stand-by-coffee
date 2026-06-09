@@ -190,7 +190,7 @@
 
 <body>
     <div class="video-container" id="video-container">
-        <video id="bg-video" autoplay muted loop playsinline preload="auto">
+        <video id="bg-video" loop playsinline preload="auto">
             <source src="coffeen.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -229,9 +229,6 @@
             iconMuted.style.display = 'none';
         }
     };
-
-    // Initialize audio button icon state on load to match muted autoplay status
-    updateAudioButton();
 
     audioControl.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -285,17 +282,15 @@
             setTimeout(() => {
                 document.body.classList.add('play-video');
 
-                // Try to unmute the preloaded/playing video
                 video.volume = 0.8;
-                video.muted = false;
-
-                // Explicitly call play() again to guarantee it's active after user interaction context changes
                 video.play().then(() => {
-                    console.log("Video unmuted and playing successfully.");
+                    console.log("Playback started successfully.");
+                    video.muted = false;
                     updateAudioButton();
                 }).catch(err => {
-                    console.log("Audio playback was blocked by autoplay policies, keeping muted fallback:", err);
+                    console.log("Audio playback was initially blocked, playing muted fallback:", err);
                     video.muted = true;
+                    video.play();
                     updateAudioButton();
                 });
 
