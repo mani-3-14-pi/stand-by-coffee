@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stand By Coffee</title>
+    <!-- Importing Montserrat, a clean, bold, geometric sans-serif to match the logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            /* Plain blank white screen */
+            height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            /* Initial state, scroll enabled after fonts load */
+        }
+
+        /* The coffee-colored layer */
+        .layer {
+            position: fixed;
+            /* Keep background static, prevent scrolling */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F7B65E; /* Warm honey/amber backlit sign glow matching the logo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* Using a blend mode trick to make the text truly knock out the background layer */
+            mix-blend-mode: multiply;
+            
+            /* Transition for the reveal fade phase */
+            transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .text {
+            /* White text with multiply blend mode over a white background 
+               creates a true transparent knockout effect! */
+            color: #ffffff;
+            font-size: 10vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.05em;
+            margin: 0;
+            line-height: 1.1; /* Restore tight line spacing */
+            position: relative; /* Anchor for positioning stand-by */
+
+            /* Micro-animation for a cool entrance */
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        #stand-by {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% - 0.1em); /* Tighter line spacing above coffee-word */
+            transform: translateX(-50%);
+            white-space: nowrap;
+            transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        #coffee-word {
+            display: inline-block;
+            transform-origin: center center;
+            transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        /* Revealed phase transitions (zoom out/through the text to white page) */
+        body.revealed .layer {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.revealed #coffee-word {
+            transform: translateY(var(--target-translate-y)) scaleX(25) scaleY(calc(var(--target-scale-y) * 15)) !important;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1) !important;
+        }
+
+        /* Custom C shape from the logo */
+        .custom-c {
+            height: 0.72em; /* Aligns with uppercase letter height */
+            vertical-align: middle;
+            margin-right: -0.05em; /* Tighten space between C and OFFEE */
+            display: inline-block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 9; /* Proportional thickness to match Montserrat 900 */
+            stroke-linecap: square;
+            stroke-linejoin: miter;
+            transform: translateY(-0.06em); /* Fine baseline alignment Nudge */
+        }
+
+        /* Video background styling */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+            background-color: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 2.0s ease-in-out;
+            filter: brightness(1);
+        }
+
+        body.dimmed-video .video-container video {
+            filter: brightness(0.3);
+        }
+
+        /* Audio control button */
+        .audio-control-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .audio-control-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.08);
+            box-shadow: 0 6px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .audio-control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .audio-control-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .audio-control-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
+        }
+
+        /* Revealed states */
+        body.play-video .video-container {
+            opacity: 1;
+        }
+
+        body.play-video .audio-control-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="video-container" id="video-container">
+        <video id="bg-video" loop playsinline preload="auto">
+            <source src="coffeen.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <button id="audio-control" class="audio-control-btn" aria-label="Toggle mute">
+        <svg class="icon-unmuted" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+        <svg class="icon-muted" viewBox="0 0 24 24" style="display: none;">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.03c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+    </button>
+
+    <div class="layer">
+        <h1 class="text">
+            <span id="stand-by">Stand By</span>
+            <span id="coffee-word"><svg class="custom-c" viewBox="0 0 120 40"><path d="M 115 5 L 25 5 A 15 15 0 0 0 25 35 L 115 35" /></svg>OFFEE</span>
+        </h1>
+    </div>
+</body>
+<script>
+    const coffeeWord = document.getElementById('coffee-word');
+    const standBy = document.getElementById('stand-by');
+    const video = document.getElementById('bg-video');
+    const audioControl = document.getElementById('audio-control');
+    const iconUnmuted = audioControl.querySelector('.icon-unmuted');
+    const iconMuted = audioControl.querySelector('.icon-muted');
+
+    const updateAudioButton = () => {
+        if (video.muted) {
+            iconUnmuted.style.display = 'none';
+            iconMuted.style.display = 'block';
+        } else {
+            iconUnmuted.style.display = 'block';
+            iconMuted.style.display = 'none';
+        }
+    };
+
+    audioControl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        updateAudioButton();
+    });
+
+    const triggerStretch = () => {
+        // Remove all listeners immediately to prevent multi-trigger glitches
+        window.removeEventListener('scroll', triggerStretch);
+        window.removeEventListener('wheel', triggerStretch);
+        window.removeEventListener('touchmove', triggerStretch);
+        window.removeEventListener('keydown', triggerStretch);
+
+        // Immediately reset scroll position and lock viewport
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100vh';
+
+        // Slide "Stand By" completely off the top of the viewport
+        const rectStandBy = standBy.getBoundingClientRect();
+        const translateStandByY = -(rectStandBy.bottom + 20);
+        standBy.style.transform = `translateX(-50%) translateY(${translateStandByY}px)`;
+
+        // The final target height of the word "Coffee" in pixels (this is 'n')
+        const n = 1120; // Adjust this value to increase/decrease the stretch!
+
+        // Measure unscaled height and calculate scale factor to reach exactly 'n' pixels
+        const naturalHeight = coffeeWord.offsetHeight;
+        const scaleFactor = n / naturalHeight;
+
+        // Compute translation to vertically center "Coffee" in the viewport, then nudge it slightly upwards (by 20px)
+        const rect = coffeeWord.getBoundingClientRect();
+        const wordCenterY = rect.top + rect.height / 2;
+        const viewportHeight = window.innerHeight;
+        const viewportCenterY = viewportHeight / 2;
+        const translateY = (viewportCenterY - wordCenterY) - 20;
+
+        // Set custom CSS variables on the element to feed into the next transition phase
+        coffeeWord.style.setProperty('--target-translate-y', `${translateY}px`);
+        coffeeWord.style.setProperty('--target-scale-y', scaleFactor);
+
+        // Trigger the transition stretching it to the roof and bottom
+        coffeeWord.style.transform = `translateY(${translateY}px) scaleY(${scaleFactor})`;
+
+        // Wait for stretch to complete, then zoom out/through to reveal white page (0.5s pause)
+        setTimeout(() => {
+            document.body.classList.add('revealed');
+
+            // Wait for the 1.2s zoom out transition to complete, plus a 0.7-second delay, before playing/showing the video
+            setTimeout(() => {
+                document.body.classList.add('play-video');
+
+                video.volume = 0.8;
+                video.play().then(() => {
+                    console.log("Playback started successfully.");
+                    video.muted = false;
+                    updateAudioButton();
+                }).catch(err => {
+                    console.log("Audio playback was initially blocked, playing muted fallback:", err);
+                    video.muted = true;
+                    video.play();
+                    updateAudioButton();
+                });
+
+                // Smoothly dim the video 1.5 seconds after playback starts
+                setTimeout(() => {
+                    document.body.classList.add('dimmed-video');
+                }, 1500);
+            }, 1900); // 1.2s zoom-out duration + 0.7s additional delay
+        }, 2300); // 1.8s stretch transition + 500ms pause
+    };
+
+    // Only allow interaction triggers once fonts are fully loaded to ensure accurate layout measurements
+    document.fonts.ready.then(() => {
+        document.body.style.overflowY = 'scroll';
+        document.body.style.minHeight = '120vh';
+
+        // Listen to any interaction hint (scroll, scrollwheel click/roll, swipe, keypress)
+        window.addEventListener('scroll', triggerStretch, { once: true });
+        window.addEventListener('wheel', triggerStretch, { once: true });
+        window.addEventListener('touchmove', triggerStretch, { once: true });
+        window.addEventListener('keydown', triggerStretch, { once: true });
+    });
+</script>
+</body>
+
+</html>
