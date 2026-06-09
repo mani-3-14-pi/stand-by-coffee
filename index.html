@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stand By Coffee</title>
-    <!-- Importing Montserrat, a clean, bold, geometric sans-serif to match the logo -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <!-- Importing Google Fonts for premium typography: Montserrat, Playfair Display (serif), and Inter (sans-serif) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@700;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+        rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -27,14 +29,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #F7B65E; /* Warm honey/amber backlit sign glow matching the logo */
+            background-color: #F7B65E;
+            /* Warm honey/amber backlit sign glow matching the logo */
             display: flex;
             justify-content: center;
             align-items: center;
-            
+
             /* Using a blend mode trick to make the text truly knock out the background layer */
             mix-blend-mode: multiply;
-            
+
             /* Transition for the reveal fade phase */
             transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
@@ -49,8 +52,10 @@
             text-align: center;
             letter-spacing: 0.05em;
             margin: 0;
-            line-height: 1.1; /* Restore tight line spacing */
-            position: relative; /* Anchor for positioning stand-by */
+            line-height: 1.1;
+            /* Restore tight line spacing */
+            position: relative;
+            /* Anchor for positioning stand-by */
 
             /* Micro-animation for a cool entrance */
             opacity: 0;
@@ -66,7 +71,8 @@
         #stand-by {
             position: absolute;
             left: 50%;
-            bottom: calc(100% - 0.1em); /* Tighter line spacing above coffee-word */
+            bottom: calc(100% - 0.1em);
+            /* Tighter line spacing above coffee-word */
             transform: translateX(-50%);
             white-space: nowrap;
             transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -93,16 +99,20 @@
 
         /* Custom C shape from the logo */
         .custom-c {
-            height: 0.72em; /* Aligns with uppercase letter height */
+            height: 0.72em;
+            /* Aligns with uppercase letter height */
             vertical-align: middle;
-            margin-right: -0.05em; /* Tighten space between C and OFFEE */
+            margin-right: -0.05em;
+            /* Tighten space between C and OFFEE */
             display: inline-block;
             fill: none;
             stroke: currentColor;
-            stroke-width: 9; /* Proportional thickness to match Montserrat 900 */
+            stroke-width: 9;
+            /* Proportional thickness to match Montserrat 900 */
             stroke-linecap: square;
             stroke-linejoin: miter;
-            transform: translateY(-0.06em); /* Fine baseline alignment Nudge */
+            transform: translateY(-0.06em);
+            /* Fine baseline alignment Nudge */
         }
 
         /* Video background styling */
@@ -112,22 +122,41 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2;
             opacity: 0;
             transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1);
             background-color: #000;
         }
 
         .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: filter 2.0s ease-in-out;
             filter: brightness(1);
+            z-index: 0;
+        }
+
+        /* Video Vignette/Gradient Overlay */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                    rgba(0, 0, 0, 0.75) 0%,
+                    rgba(0, 0, 0, 0.45) 50%,
+                    rgba(0, 0, 0, 0.65) 100%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         body.dimmed-video .video-container video {
-            filter: brightness(0.3);
+            filter: brightness(0.45);
         }
 
         /* Audio control button */
@@ -185,30 +214,415 @@
             opacity: 1;
             pointer-events: auto;
         }
+
+        /* Header and logo styling */
+        .header {
+            position: fixed;
+            top: 60px;
+            left: 40px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-20px);
+            transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1), transform 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .logo {
+            height: 96px;
+            width: auto;
+            display: block;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        body.play-video .header {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* Hero Content Styling */
+        .hero-content {
+            position: fixed;
+            top: 438px;
+            left: 53px;
+            max-width: 550px;
+            z-index: 5;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 16px 0;
+            color: #ffffff;
+            text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-desc {
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0 0 32px 0;
+            color: #E8E8E4;
+            /* Light cream/off-white */
+            max-width: 480px;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Buttons styling */
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C28B6C 0%, #8B6F47 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 15px rgba(194, 139, 108, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(194, 139, 108, 0.5), 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        /* Stats Section Styling */
+        .stats-section {
+            position: fixed;
+            bottom: 40px;
+            left: 60px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .stat-item {
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.5px;
+            cursor: default;
+            transition: color 0.3s ease;
+        }
+
+        .stat-item:hover {
+            color: #F7B65E;
+        }
+
+        .stat-divider {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        /* Animation States */
+        body.play-video .hero-content {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.play-video .hero-title {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+
+        body.play-video .hero-desc {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.25s;
+        }
+
+        body.play-video .hero-actions {
+            opacity: 1;
+            transform: scale(1);
+            transition-delay: 0.4s;
+        }
+
+        body.play-video .stats-section {
+            opacity: 1;
+            transition-delay: 0.55s;
+        }
+
+        /* Spacing & Positioning Breakpoints */
+
+        /* Tablet Layout (768px - 1023px) */
+        @media (max-width: 1023px) {
+            .header {
+                top: 40px;
+                left: 40px;
+            }
+
+            .logo {
+                height: 82px;
+            }
+
+            .hero-content {
+                left: 40px;
+                max-width: 480px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .hero-desc {
+                font-size: 18px;
+                margin-bottom: 24px;
+            }
+
+            .stats-section {
+                left: 40px;
+                bottom: 30px;
+                font-size: 14px;
+            }
+
+            .audio-control-btn {
+                right: 30px;
+                bottom: 30px;
+            }
+        }
+
+        /* Mobile Layout (< 768px) */
+        @media (max-width: 767px) {
+            .header {
+                top: 24px;
+                left: 24px;
+                transform: none;
+            }
+
+            .logo {
+                height: 70px;
+            }
+
+            .hero-content {
+                left: 24px;
+                right: 24px;
+                top: 20%;
+                max-width: 100%;
+            }
+
+            .hero-title {
+                font-size: 38px;
+                margin-bottom: 12px;
+            }
+
+            .hero-desc {
+                font-size: 16px;
+                margin-bottom: 24px;
+                max-width: 100%;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 12px 24px;
+                box-sizing: border-box;
+            }
+
+            .stats-section {
+                left: 24px;
+                bottom: 24px;
+                flex-wrap: wrap;
+                gap: 8px 12px;
+                font-size: 13px;
+            }
+
+            .audio-control-btn {
+                right: 24px;
+                bottom: 24px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        /* Small Mobile (< 480px) */
+        @media (max-width: 479px) {
+            .hero-content {
+                top: 18%;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-desc {
+                font-size: 15px;
+            }
+
+            .stats-section {
+                left: 50%;
+                transform: translateX(-50%);
+                justify-content: center;
+                width: calc(100% - 48px);
+                bottom: 100px;
+            }
+
+            .audio-control-btn {
+                right: 24px;
+                bottom: 24px;
+            }
+        }
+
+        /* Position indicator badge for draggable hero content */
+        .position-badge {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #F7B65E;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .hero-content:hover .position-badge,
+        .position-badge.active {
+            opacity: 1;
+        }
+
+        /* Custom premium focus rings for accessibility */
+        .btn:focus-visible,
+        .audio-control-btn:focus-visible {
+            outline: 3px solid #F7B65E;
+            outline-offset: 3px;
+        }
+
+        /* Respect users who prefer reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-delay: 0s !important;
+                animation-duration: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-delay: 0s !important;
+                transition-duration: 0s !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <header class="header">
+        <img src="logo.png" alt="Stand By Coffee Logo" class="logo">
+    </header>
+
     <div class="video-container" id="video-container">
+        <div class="video-overlay"></div>
         <video id="bg-video" loop playsinline preload="auto">
             <source src="coffeen.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
+    <div class="hero-content">
+        <h2 class="hero-title">Your Daily Escape</h2>
+        <p class="hero-desc">Premium coffee & delicious bites in the heart of Worli</p>
+        <div class="hero-actions">
+            <a href="#menu" class="btn btn-primary">Explore Menu</a>
+            <a href="#reserve" class="btn btn-secondary">Reserve Table</a>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <span class="stat-item">⭐ 4.1★</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item">358+ Reviews</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item">Open 7:30 AM - 1:00 AM</span>
+    </div>
+
     <button id="audio-control" class="audio-control-btn" aria-label="Toggle mute">
         <svg class="icon-unmuted" viewBox="0 0 24 24">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            <path
+                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
         </svg>
         <svg class="icon-muted" viewBox="0 0 24 24" style="display: none;">
-            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.03c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            <path
+                d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.03c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
         </svg>
     </button>
 
     <div class="layer">
         <h1 class="text">
             <span id="stand-by">Stand By</span>
-            <span id="coffee-word"><svg class="custom-c" viewBox="0 0 120 40"><path d="M 115 5 L 25 5 A 15 15 0 0 0 25 35 L 115 35" /></svg>OFFEE</span>
+            <span id="coffee-word"><svg class="custom-c" viewBox="0 0 120 40">
+                    <path d="M 115 5 L 25 5 A 15 15 0 0 0 25 35 L 115 35" />
+                </svg>OFFEE</span>
         </h1>
     </div>
 </body>
@@ -282,7 +696,7 @@
             setTimeout(() => {
                 document.body.classList.add('play-video');
 
-                video.volume = 0.8;
+                video.volume = 0.5;
                 video.play().then(() => {
                     console.log("Playback started successfully.");
                     video.muted = false;
@@ -313,6 +727,102 @@
         window.addEventListener('touchmove', triggerStretch, { once: true });
         window.addEventListener('keydown', triggerStretch, { once: true });
     });
+
+    // Repositioning drag capability for hero content layout tuning
+    (() => {
+        const hero = document.querySelector('.hero-content');
+
+        // Create a coordinates indicator badge
+        const badge = document.createElement('div');
+        badge.className = 'position-badge';
+        badge.innerHTML = 'Drag to reposition layout';
+        hero.appendChild(badge);
+
+        let isDragging = false;
+        let startX, startY;
+        let initialLeft, initialTop;
+
+        hero.style.cursor = 'move';
+        hero.style.userSelect = 'none';
+
+        hero.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return;
+            if (e.target.closest('.btn')) return;
+
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+
+            const rect = hero.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+
+            hero.style.transition = 'none';
+            badge.classList.add('active');
+            e.preventDefault();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            const newLeft = initialLeft + dx;
+            const newTop = initialTop + dy;
+
+            hero.style.left = `${newLeft}px`;
+            hero.style.top = `${newTop}px`;
+
+            const pctLeft = Math.round((newLeft / window.innerWidth) * 100);
+            const pctTop = Math.round((newTop / window.innerHeight) * 100);
+
+            badge.innerHTML = `top: ${newTop}px (${pctTop}%); left: ${newLeft}px (${pctLeft}%);`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            hero.style.transition = 'opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1)';
+            badge.classList.remove('active');
+            console.log(`Repositioned Hero -> top: ${hero.style.top}; left: ${hero.style.left};`);
+        });
+
+        // Mobile touch controls for layout repositioning
+        hero.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.btn')) return;
+            isDragging = true;
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            const rect = hero.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            hero.style.transition = 'none';
+            badge.classList.add('active');
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            const dx = touch.clientX - startX;
+            const dy = touch.clientY - startY;
+            const newLeft = initialLeft + dx;
+            const newTop = initialTop + dy;
+            hero.style.left = `${newLeft}px`;
+            hero.style.top = `${newTop}px`;
+            const pctLeft = Math.round((newLeft / window.innerWidth) * 100);
+            const pctTop = Math.round((newTop / window.innerHeight) * 100);
+            badge.innerHTML = `top: ${newTop}px (${pctTop}%); left: ${newLeft}px (${pctLeft}%);`;
+        });
+
+        window.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            hero.style.transition = 'opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1)';
+            badge.classList.remove('active');
+        });
+    })();
 </script>
 </body>
 
